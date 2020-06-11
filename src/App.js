@@ -30,7 +30,7 @@ function StockApp() {
 
   useEffect(() => {}, [symbol]);
 
-  const onClickGetPrice = () => {
+  const getFromApi = () => {
     if (!symbol) {
       console.log("No symbole defined!");
       return;
@@ -54,14 +54,29 @@ function StockApp() {
       });
   };
 
-  const setOracle = () => {};
+  const setOracle = async () => {
+    accounts = await web3.eth.getAccounts();
+    //This is true if you deploy on ganache using first available account
+    let contractOwner = accounts[0];
+    console.log("Owner :" + accounts[0]);
+
+    const tx = await stockOracle.methods
+      .setStock(
+        web3.utils.fromAscii(symbol),
+        Math.round(Number(price) * 10000),
+        Number(volume) * 10000
+      )
+      .send({ from: contractOwner });
+
+    console.log(tx);
+  };
 
   return (
     <div>
       <h1>Stock Oracle DAPP</h1>
       <div>
         <input onChange={(event) => setSymbol(event.target.value)}></input>
-        <button onClick={onClickGetPrice}>Get Price</button>
+        <button onClick={getFromApi}>Get Price</button>
         <span>
           {" "}
           Price : {price} | Volume: {volume}
@@ -70,6 +85,11 @@ function StockApp() {
       <div>
         <input></input>
         <button onClick={setOracle}>Set the Oracle</button>
+        <span>{price}</span>
+      </div>
+      <div>
+        <input></input>
+        <button onClick={getFromOracle}>Set the Oracle</button>
         <span>{price}</span>
       </div>
     </div>
