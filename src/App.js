@@ -106,32 +106,65 @@ function StockApp() {
   };
 
   return (
-    <div>
-      <h1>Stock Oracle DAPP</h1>
-      <div>
-        <input onChange={(event) => setSymbol(event.target.value)}></input>
-        <button onClick={getFromApi}>Get Price</button>
-        <span>
-          {" "}
-          Price : {price} | Volume: {volume}
-        </span>
-      </div>
-      <div>
-        <hr></hr>
-
-        <span>
-          Symbol: {symbol} | Price : {price} | Volume: {volume}
-        </span>
-        <br></br>
-        <button onClick={setOracle}>Set the Oracle</button>
-      </div>
-      <div>
-        <hr></hr>
-        <button onClick={getFromOracle}>Get price from Oracle</button>
-        <br></br>
-        <span>
-          Oracle Price: {oraclePrice} | Oracle Valume: {oracleVolume}
-        </span>
+    <div className="container">
+      <div className="jumbotron mt-5">
+        <hr />
+        <h1>Stock Oracle DAPP</h1>
+        <div className="row">
+          <div className="col-sm">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="type the symbol to fetch"
+              onChange={(event) => setSymbol(event.target.value)}
+            ></input>
+            <hr />
+            <button
+              type="button"
+              className="btn btn-primary btn-lg btn-block"
+              onClick={getFromApi}
+            >
+              Get price from API
+            </button>
+            <button
+              className="btn btn-primary btn-lg btn-block"
+              onClick={setOracle}
+            >
+              Set the Oracle
+            </button>
+            <button
+              className="btn btn-primary btn-lg btn-block"
+              onClick={getFromOracle}
+            >
+              Get price from Oracle
+            </button>
+          </div>
+          <div className="col-sm">
+            <div className="card text-white bg-primary mb-3">
+              <div className="card-header">Data From API</div>
+              <div className="card-body">
+                <h4 className="card-title">Stock details</h4>
+                <p className="card-text">
+                  Symbol: {symbol} <br />
+                  Price : {price} <br /> Volume: {volume}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="col-sm">
+            <div className="card text-white bg-info mb-3">
+              <div className="card-header">Data from Oracle</div>
+              <div className="card-body">
+                <h4 className="card-title">Oracle Stock details</h4>
+                <p className="card-text">
+                  Symbol: {symbol} <br />
+                  Oracle Price: {oraclePrice} <br /> Oracle Valume:
+                  {oracleVolume}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
