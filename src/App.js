@@ -1,24 +1,77 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Web3 from "web3";
+import { STOCK_ORACLE_ABI, STOCK_ORACLE_ADDRESS } from "./quotecontract";
+
+const apiKey = "7BGAIYXYURSQRIBI";
+const port = 8545; // If using Ganache GUI use 7545 for port
+const web3 = new Web3("http://localhost:" + port);
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="AppContent">
+        <StockApp></StockApp>
+      </div>
+    </div>
+  );
+}
+
+function StockApp() {
+  const [symbol, setSymbol] = useState("");
+  const [price, setPrice] = useState(0);
+  const [volume, setVolume] = useState(0);
+  let accounts = [];
+  const stockOracle = new web3.eth.Contract(
+    STOCK_ORACLE_ABI,
+    STOCK_ORACLE_ADDRESS
+  );
+
+  useEffect(() => {}, [symbol]);
+
+  const onClickGetPrice = () => {
+    if (!symbol) {
+      console.log("No symbole defined!");
+      return;
+    }
+    fetch(
+      "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
+        symbol +
+        "&apikey=KEY"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        // setQuote(data["Global Quote"]);
+        console.log(data["Global Quote"]["05. price"]);
+        setPrice(data["Global Quote"]["05. price"]);
+        setVolume(data["Global Quote"]["06. volume"]);
+      })
+      .catch((err) => {
+        console.error(err);
+        setPrice(0);
+        setVolume(0);
+      });
+  };
+
+  const setOracle = () => {};
+
+  return (
+    <div>
+      <h1>Stock Oracle DAPP</h1>
+      <div>
+        <input onChange={(event) => setSymbol(event.target.value)}></input>
+        <button onClick={onClickGetPrice}>Get Price</button>
+        <span>
+          {" "}
+          Price : {price} | Volume: {volume}
+        </span>
+      </div>
+      <div>
+        <input></input>
+        <button onClick={setOracle}>Set the Oracle</button>
+        <span>{price}</span>
+      </div>
     </div>
   );
 }
