@@ -25,8 +25,16 @@ function StockApp() {
   const [volume, setVolume] = useState(0);
   const [oraclePrice, setOraclePrice] = useState("Not Defined");
   const [oracleVolume, setOracleVolume] = useState("Not Defined");
+  const [feedback, setFeedback] = useState(" ");
+  const [feedClass, setFeedClass] = useState("");
 
   let accounts = [];
+
+  const clearAllFeedBack = () => {
+    //clearing feed back from previous messages
+    setFeedClass("");
+    setFeedback("");
+  };
 
   //Getting the contract from ganache by ABI and address
   const stockOracle = new web3.eth.Contract(
@@ -38,11 +46,17 @@ function StockApp() {
 
   //Calling the web API fro the stock symbol
   const getFromApi = () => {
+    clearAllFeedBack();
+
     //make sure there is a symbole defined
     if (!symbol) {
-      console.log("No symbole defined!");
+      setFeedback("No symbol defined! Please first define a symbol.");
+      setFeedClass("text-danger");
       return;
     }
+
+    setFeedback("Calling the web API...");
+    setFeedClass("text-muted");
     fetch(
       "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
         symbol +
@@ -51,12 +65,18 @@ function StockApp() {
       .then((res) => res.json())
       .then((data) => {
         if (data === undefined) {
+          setFeedback("No data for this symbol was found.");
+          setFeedClass("text-danger");
           return;
         }
+        setFeedback("Data received.");
+        setFeedClass("text-success");
         setPrice(data["Global Quote"]["05. price"]);
         setVolume(data["Global Quote"]["06. volume"]);
       })
       .catch((err) => {
+        setFeedback("Some error with the API. Probably symbol was not found");
+        setFeedClass("text-danger");
         console.error(err);
         setPrice(0);
         setVolume(0);
@@ -65,14 +85,19 @@ function StockApp() {
 
   //Setting smart contract with data received from web API
   const setOracle = async () => {
+    clearAllFeedBack();
+
     if (!price && !volume) {
-      console.log("No price and volume to set");
+      setFeedClass("text-danger");
+      setFeedback("No price and volume to set");
       return;
     }
+
+    setFeedClass("text-muted");
+    setFeedback(`Setting data in oracle from Address ${accounts[0]}`);
     accounts = await web3.eth.getAccounts();
     //This is true if you deploy on ganache using first available account
     let contractOwner = accounts[0];
-    console.log("Setting from Address :" + accounts[0]);
 
     const tx = await stockOracle.methods
       .setStock(
@@ -81,14 +106,33 @@ function StockApp() {
         Number(volume)
       )
       .send({ from: contractOwner });
+
+    if (tx) {
+      setFeedClass("text-success");
+      setFeedback(`tx received: TX hash: ${tx["blockHash"]}`);
+    } else {
+      setFeedClass("text-danger");
+      setFeedback(
+        "No tx received... something went wrong. please try again later."
+      );
+    }
   };
 
   //Calling the oracle to see if data was persisted successfuly
   const getFromOracle = async () => {
+    clearAllFeedBack();
+
     accounts = await web3.eth.getAccounts();
     //This is true if you deploy on ganache using first available account
     let contractOwner = accounts[0];
-    console.log("getting info from address :" + accounts[0]);
+
+    if (contractOwner == 0x0) {
+      setFeedClass("text-danger");
+      setFeedback("Can not connect to blockchain");
+    }
+
+    setFeedClass("text-muted");
+    setFeedback(`Geting data in oracle from Address ${accounts[0]}`);
 
     stockOracle.methods
       .getStockPrice(web3.utils.fromAscii(symbol))
@@ -102,6 +146,10 @@ function StockApp() {
       .call({ from: contractOwner })
       .then((oracleVolume) => {
         setOracleVolume(oracleVolume);
+        setFeedClass("text-success");
+        setFeedback(
+          `Data received from contract address ${STOCK_ORACLE_ADDRESS}`
+        );
       });
   };
 
@@ -109,6 +157,7 @@ function StockApp() {
     <div className="container">
       <div className="jumbotron mt-5">
         <hr />
+        <p className={feedClass}>{feedback}</p>
         <h1>Stock Oracle DAPP</h1>
         <div className="row">
           <div className="col-sm">
