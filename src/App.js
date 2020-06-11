@@ -50,7 +50,9 @@ function StockApp() {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(data["Global Quote"]["05. price"]);
+        if (data === undefined) {
+          return;
+        }
         setPrice(data["Global Quote"]["05. price"]);
         setVolume(data["Global Quote"]["06. volume"]);
       })
@@ -70,17 +72,15 @@ function StockApp() {
     accounts = await web3.eth.getAccounts();
     //This is true if you deploy on ganache using first available account
     let contractOwner = accounts[0];
-    console.log("Owner :" + accounts[0]);
+    console.log("Setting from Address :" + accounts[0]);
 
     const tx = await stockOracle.methods
       .setStock(
         web3.utils.fromAscii(symbol),
         Math.round(Number(price) * 10000),
-        Number(volume) * 10000
+        Number(volume)
       )
       .send({ from: contractOwner });
-
-    console.log(tx);
   };
 
   //Calling the oracle to see if data was persisted successfuly
@@ -88,13 +88,12 @@ function StockApp() {
     accounts = await web3.eth.getAccounts();
     //This is true if you deploy on ganache using first available account
     let contractOwner = accounts[0];
-    console.log("Owner :" + accounts[0]);
+    console.log("getting info from address :" + accounts[0]);
 
     stockOracle.methods
       .getStockPrice(web3.utils.fromAscii(symbol))
       .call({ from: contractOwner })
       .then((oraclePrice) => {
-        console.log(oraclePrice);
         setOraclePrice(oraclePrice);
       });
 
@@ -102,7 +101,6 @@ function StockApp() {
       .getStockVolume(web3.utils.fromAscii(symbol))
       .call({ from: contractOwner })
       .then((oracleVolume) => {
-        console.log(oracleVolume);
         setOracleVolume(oracleVolume);
       });
   };

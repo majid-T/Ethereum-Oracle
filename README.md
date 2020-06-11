@@ -1,3 +1,11 @@
+## Student Lab for Design Patterns for Blockchain
+
+Student majid shockoohi Id: 101284289
+Some notes:
+1.Solidity contract included in the root directry.
+2.Oracle address will vary on each deployment.
+3.If using ganache GUI, then you shoull change the port of blockchain network to 7545
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
