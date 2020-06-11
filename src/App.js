@@ -18,11 +18,17 @@ function App() {
   );
 }
 
+// Making the StockApp component
 function StockApp() {
   const [symbol, setSymbol] = useState("");
   const [price, setPrice] = useState(0);
   const [volume, setVolume] = useState(0);
+  const [oraclePrice, setOraclePrice] = useState("Not Defined");
+  const [oracleVolume, setOracleVolume] = useState("Not Defined");
+
   let accounts = [];
+
+  //Getting the contract from ganache by ABI and address
   const stockOracle = new web3.eth.Contract(
     STOCK_ORACLE_ABI,
     STOCK_ORACLE_ADDRESS
@@ -30,7 +36,9 @@ function StockApp() {
 
   useEffect(() => {}, [symbol]);
 
+  //Calling the web API fro the stock symbol
   const getFromApi = () => {
+    //make sure there is a symbole defined
     if (!symbol) {
       console.log("No symbole defined!");
       return;
@@ -42,7 +50,6 @@ function StockApp() {
     )
       .then((res) => res.json())
       .then((data) => {
-        // setQuote(data["Global Quote"]);
         console.log(data["Global Quote"]["05. price"]);
         setPrice(data["Global Quote"]["05. price"]);
         setVolume(data["Global Quote"]["06. volume"]);
@@ -54,7 +61,12 @@ function StockApp() {
       });
   };
 
+  //Setting smart contract with data received from web API
   const setOracle = async () => {
+    if (!price && !volume) {
+      console.log("No price and volume to set");
+      return;
+    }
     accounts = await web3.eth.getAccounts();
     //This is true if you deploy on ganache using first available account
     let contractOwner = accounts[0];
@@ -71,6 +83,30 @@ function StockApp() {
     console.log(tx);
   };
 
+  //Calling the oracle to see if data was persisted successfuly
+  const getFromOracle = async () => {
+    accounts = await web3.eth.getAccounts();
+    //This is true if you deploy on ganache using first available account
+    let contractOwner = accounts[0];
+    console.log("Owner :" + accounts[0]);
+
+    stockOracle.methods
+      .getStockPrice(web3.utils.fromAscii(symbol))
+      .call({ from: contractOwner })
+      .then((oraclePrice) => {
+        console.log(oraclePrice);
+        setOraclePrice(oraclePrice);
+      });
+
+    stockOracle.methods
+      .getStockVolume(web3.utils.fromAscii(symbol))
+      .call({ from: contractOwner })
+      .then((oracleVolume) => {
+        console.log(oracleVolume);
+        setOracleVolume(oracleVolume);
+      });
+  };
+
   return (
     <div>
       <h1>Stock Oracle DAPP</h1>
@@ -83,14 +119,21 @@ function StockApp() {
         </span>
       </div>
       <div>
-        <input></input>
+        <hr></hr>
+
+        <span>
+          Symbol: {symbol} | Price : {price} | Volume: {volume}
+        </span>
+        <br></br>
         <button onClick={setOracle}>Set the Oracle</button>
-        <span>{price}</span>
       </div>
       <div>
-        <input></input>
-        <button onClick={getFromOracle}>Set the Oracle</button>
-        <span>{price}</span>
+        <hr></hr>
+        <button onClick={getFromOracle}>Get price from Oracle</button>
+        <br></br>
+        <span>
+          Oracle Price: {oraclePrice} | Oracle Valume: {oracleVolume}
+        </span>
       </div>
     </div>
   );
