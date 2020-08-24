@@ -11,7 +11,7 @@ Some notes:
 
 ## What is this repo?
 
-We have simulated an Oracle in this peoject. A solidity smart contract StockOracle.sol has functions to set and get different stock prices. Then front end code with React.Js will fetch this prices from a 3rd party API and sets the prices on smart contract. Here we ued http://remix.ethereum.org/ and ganache CLI to setup an Ethereum environemnt. Front end code will use the ABI and deployed address of of the smart contract to intract with it.
+We have simulated an Oracle in this project. A solidity smart contract StockOracle.sol has functions to set and get different stock prices. Then front end code with React.Js will fetch this prices from a 3rd party API and sets the prices on smart contract. Here we used http://remix.ethereum.org/ and ganache CLI to setup an Ethereum environment. Front end code will use the ABI and deployed address of the smart contract to interact with it.
 
 ### Technologies and tools used in this project
 
