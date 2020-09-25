@@ -24,10 +24,20 @@ const message = {
 };
 
 
-transport.sendMail(message, function (err, info) {
-    if (err) {
-        console.log(err)
-    } else {
-        console.log(info);
-    }
-});
+module.exports = function send_notification() {
+    const mailOptions = {
+        from: 'majid.dev.shockoohi@gmail.com',
+        to: 'majid.shockoohi@gmail.com',         // List of recipients
+        subject: 'Testing nodemailer', // Subject line
+        html: '<h1>Nice module you are using</h1><p>Thank you for using this account</p>' // Plain text body
+        ,
+    };
+
+    transport.sendMail(mailOptions, function (err, info) {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log(info);
+        }
+    })
+}

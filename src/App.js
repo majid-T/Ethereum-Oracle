@@ -5,7 +5,7 @@ import Web3 from "web3";
 import { STOCK_ORACLE_ABI, STOCK_ORACLE_ADDRESS } from "./quotecontract";
 
 const apiKey = "7BGAIYXYURSQRIBI";
-const port = 8545; // If using Ganache GUI use 7545 for port
+const port = 7545; // If using Ganache GUI use 7545 for port
 const web3 = new Web3("http://localhost:" + port);
 
 function App() {
@@ -42,7 +42,7 @@ function StockApp() {
     STOCK_ORACLE_ADDRESS
   );
 
-  useEffect(() => {}, [symbol]);
+  useEffect(() => { }, [symbol]);
 
   //Calling the web API fro the stock symbol
   const getFromApi = () => {
@@ -59,8 +59,8 @@ function StockApp() {
     setFeedClass("text-muted");
     fetch(
       "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=" +
-        symbol +
-        "&apikey=KEY"
+      symbol +
+      "&apikey=KEY"
     )
       .then((res) => res.json())
       .then((data) => {
