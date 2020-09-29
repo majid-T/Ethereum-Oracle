@@ -1,6 +1,6 @@
 // This will hold the contract address, will change on every deployment
 export const STOCK_ORACLE_ADDRESS =
-  "0xB98be1e1821F3cB77f0610caBC8790E1986029e2";
+  "0x47e46c5357Ec98E8f5454192386A452eC69Dd605";
 
 //This is the contract ABI .
 export const STOCK_ORACLE_ABI = [

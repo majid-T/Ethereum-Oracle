@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import Web3 from "web3";
 import { STOCK_ORACLE_ABI, STOCK_ORACLE_ADDRESS } from "./quotecontract";
 import send_notification from "./emailService";
 
-const apiKey = "7BGAIYXYURSQRIBI";
+// const apiKey = "7BGAIYXYURSQRIBI";
 const port = 7545; // If using Ganache GUI use 7545 for port
 const web3 = new Web3("http://localhost:" + port);
 
@@ -128,7 +127,7 @@ function StockApp() {
     //This is true if you deploy on ganache using first available account
     let contractOwner = accounts[0];
 
-    if (contractOwner == 0x0) {
+    if (contractOwner === 0x0) {
       setFeedClass("text-danger");
       setFeedback("Can not connect to blockchain");
     }

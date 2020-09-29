@@ -25,6 +25,7 @@ const message = {
 
 
 module.exports = function send_notification() {
+    console.log("Sending Email");
     const mailOptions = {
         from: 'majid.dev.shockoohi@gmail.com',
         to: 'majid.shockoohi@gmail.com',         // List of recipients
