@@ -15,3 +15,4 @@ Some notes:
 - [ReactJS](https://reactjs.org/) - Frontend javascript library
 - [Bootstrap](https://getbootstrap.com/) - CSS library for responsive mobile first design
 - [Solidity](https://solidity.readthedocs.io/en/v0.7.0/) - Programing language for Ethereum.
+- [NodeMailer](https://www.npmjs.com/package/nodemailer) - a module for Node.js applications to allow easy as cake email sending.
