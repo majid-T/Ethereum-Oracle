@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Web3 from "web3";
 import { STOCK_ORACLE_ABI, STOCK_ORACLE_ADDRESS } from "./quotecontract";
+import send_notification from "./emailService";
 
 const apiKey = "7BGAIYXYURSQRIBI";
 const port = 7545; // If using Ganache GUI use 7545 for port
@@ -110,6 +111,7 @@ function StockApp() {
     if (tx) {
       setFeedClass("text-success");
       setFeedback(`tx received: TX hash: ${tx["blockHash"]}`);
+      send_notification();
     } else {
       setFeedClass("text-danger");
       setFeedback(
