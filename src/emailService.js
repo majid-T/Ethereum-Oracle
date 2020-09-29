@@ -16,29 +16,32 @@ let transport = nodemailer.createTransport({
     }
 });
 
-const message = {
-    from: 'majid.dev.shockoohi@gmail.com', // Sender address
-    to: 'majid.shockoohi@gmail.com',         // List of recipients
-    subject: 'Testing nodemailer', // Subject line
-    html: '<h1>Nice module you are using</h1><p>Thank you for using this account</p>' // Plain text body
-};
-
 
 module.exports = function send_notification() {
+
     console.log("Sending Email");
     const mailOptions = {
         from: 'majid.dev.shockoohi@gmail.com',
         to: 'majid.shockoohi@gmail.com',         // List of recipients
-        subject: 'Testing nodemailer', // Subject line
+        subject: 'Oracle updated', // Subject line
         html: '<h1>Nice module you are using</h1><p>Thank you for using this account</p>' // Plain text body
         ,
     };
 
-    transport.sendMail(mailOptions, function (err, info) {
-        if (err) {
-            console.log(err)
+    // verify connection configuration
+    transport.verify(function (error, success) {
+        if (error) {
+            console.log(error);
         } else {
-            console.log(info);
+            console.log("Server is ready to take our messages");
+            transport.sendMail(mailOptions, function (err, info) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log(info);
+                }
+            })
         }
-    })
+    });
+
 }
